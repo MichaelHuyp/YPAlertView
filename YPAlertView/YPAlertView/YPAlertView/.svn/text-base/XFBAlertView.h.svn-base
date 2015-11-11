@@ -1,0 +1,39 @@
+//
+//  XFBAlertView.h
+//  AlertView
+//
+//  Created by 胡云鹏 on 15/11/10.
+//  Copyright (c) 2015年 tyiti. All rights reserved.
+//
+
+#import <UIKit/UIKit.h>
+
+/** 按钮点击触发的回调 */
+typedef void(^XFBAlertViewBlock)(NSInteger buttonIndex);
+
+@interface XFBAlertView : UIView
+
+/** 按钮点击触发的回调 */
+@property (nonatomic, copy) XFBAlertViewBlock block;
+
+/**
+ *  强制更新方法
+ */
++ (void)updateAlertViewShowTitle:(NSString *)title andMessage:(NSString *)message andButtonTitle:(NSString *)btnTitle;
+
+/**
+ *  单个按钮样式方法
+ */
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andButtonTitle:(NSString *)btnTitle andAction:(XFBAlertViewBlock) block;
+
+/**
+ *  便捷方法
+ */
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andCancelButtonTitle:(NSString *)cancelButtonTitle andOtherButtonTitles:(NSArray *)otherButtonTitles andAction:(XFBAlertViewBlock) block;
+
+/**
+ *  总方法
+ */
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andCancelButtonTitle:(NSString *)cancelButtonTitle andOtherButtonTitles:(NSArray *)otherButtonTitles andAction:(XFBAlertViewBlock) block andParentView:(UIView *)view;
+
+@end

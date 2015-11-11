@@ -1,0 +1,117 @@
+//
+//  XFBAlertView.m
+//  AlertView
+//
+//  Created by 胡云鹏 on 15/11/10.
+//  Copyright (c) 2015年 tyiti. All rights reserved.
+//
+
+#import "XFBAlertView.h"
+
+@interface XFBAlertView () <UIAlertViewDelegate>
+
+@end
+
+@implementation XFBAlertView
+
+/** 检查是否使用强制更新 */
+bool isUpdate = NO;
+
+#pragma mark - Life Cycle -
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
+        [self setup];
+    }
+    return self;
+}
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    if (self = [super initWithCoder:aDecoder]) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)setup
+{
+    self.backgroundColor = [[UIColor alloc] initWithRed:0 green:0 blue:0 alpha:0.1];
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview
+{
+    [super willMoveToSuperview:newSuperview];
+    
+    self.frame = newSuperview.bounds;
+}
+
+- (void)layoutSubviews
+{
+    [super layoutSubviews];
+}
+
+#pragma mark - 私有方法 -
+- (void)showWithTitle:(NSString *)title andMessage:(NSString *)message andCancelButtonTitle:(NSString *)cancelButtonTitle andOtherButtonTitles:(NSArray *)otherButtonTitles;
+{
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:cancelButtonTitle otherButtonTitles:nil];
+    
+    for (NSString *otherTitle in otherButtonTitles) {
+        [alertView addButtonWithTitle:otherTitle];
+    }
+    
+    [alertView show];
+}
+
+#pragma mark - 公有方法 -
+
+
++ (void)updateAlertViewShowTitle:(NSString *)title andMessage:(NSString *)message andButtonTitle:(NSString *)btnTitle
+{
+    isUpdate = YES;
+    
+    [self alertViewShowTitle:title andMessage:message andCancelButtonTitle:nil andOtherButtonTitles:@[btnTitle] andAction:nil andParentView:nil];
+}
+
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andButtonTitle:(NSString *)btnTitle andAction:(XFBAlertViewBlock) block
+{
+    [self alertViewShowTitle:title andMessage:message andCancelButtonTitle:nil andOtherButtonTitles:@[btnTitle] andAction:block andParentView:nil];
+}
+
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andCancelButtonTitle:(NSString *)cancelButtonTitle andOtherButtonTitles:(NSArray *)otherButtonTitles andAction:(XFBAlertViewBlock) block
+{
+    [self alertViewShowTitle:title andMessage:message andCancelButtonTitle:cancelButtonTitle andOtherButtonTitles:otherButtonTitles andAction:block andParentView:nil];
+}
+
++ (void)alertViewShowTitle:(NSString *)title andMessage:(NSString *)message andCancelButtonTitle:(NSString *)cancelButtonTitle andOtherButtonTitles:(NSArray *)otherButtonTitles andAction:(XFBAlertViewBlock) block andParentView:(UIView *)view
+{
+    if (view == nil) view = [[UIApplication sharedApplication].windows lastObject];
+    
+    XFBAlertView *alert = [[XFBAlertView alloc] init];
+    [alert showWithTitle:title andMessage:message andCancelButtonTitle:cancelButtonTitle andOtherButtonTitles:otherButtonTitles];
+    alert.block = block;
+    [view addSubview:alert];
+}
+
+#pragma mark - UIAlertViewDelegate -
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    // 回调
+    if (self.block) {
+        self.block(buttonIndex);
+    }
+    
+    // 点击事件完成需要将视图移除
+    [self removeFromSuperview];
+    
+    if (isUpdate) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"itms-services://?action=download-manifest&url=https://dn-tyiti.qbox.me/xinfenbao.plist"]];
+        exit(0);
+    }
+}
+
+
+
+
+
+@end

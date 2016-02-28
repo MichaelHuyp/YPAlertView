@@ -113,7 +113,9 @@ static inline BOOL versionBigger9()
         alert.block = block;
         
         if (cancelButtonTitle) {
-            UIAlertAction *action = [UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleCancel handler:nil];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:cancelButtonTitle style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
+                alert.block(0);
+            }];
             [alertVc addAction:action];
         }
     
